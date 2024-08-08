@@ -48,7 +48,23 @@ class PlantByID(Resource):
         return make_response(jsonify(plant), 200)
 
 
+    def patch(self, id):
+
+        if plant := db.session.get(Plant, id):
+            data= request.get_json()
+            for attr, value in data.items():
+                setattr(plant, attr, value)
+            db.session.commit()
+            return plant.to_dict(), 200
+        
+    def delete(self, id):
+        if plant := db.session.get(Plant, id):
+            db.session.delete(plant)
+            db.session.commit()
+            return make_response("", 204)
+        
 api.add_resource(PlantByID, '/plants/<int:id>')
+
 
 
 if __name__ == '__main__':
